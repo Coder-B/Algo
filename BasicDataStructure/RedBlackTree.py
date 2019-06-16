@@ -79,7 +79,6 @@ class TreeNode:
             leftSon.right = self
             self.parent = leftSon
 
-
 # 算法解释逻辑参见 https://buwenqi.github.io/2018/01/02/%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E7%BA%A2%E9%BB%91%E6%A0%91%E5%8E%9F%E7%90%86%E4%B8%8E%E5%AE%9E%E7%8E%B0/
     def rebalance(self):
         # 根节点color设置为TreeNode.BLACK
@@ -129,6 +128,94 @@ class TreeNode:
                     g.color = TreeNode.RED
                     g.rebalance()
             
+    def findMinNode(self):
+        node = self
+        while hasattr(node,"left"):
+            node = node.left
+        return node
+
+    def replaceNode(self,another):
+        if not hasattr(self,"parent"):
+            self = another
+            delattr(self,"parent")
+        else:
+            p = self.parent
+            if hasattr(p,"left") and self == p.left:
+                self = another
+                p.left = another
+            else:
+                self = another
+                p.right = another
+            another.parent = p
+
+    # 处理调整节点与父节点、兄弟节点 的配色方案
+    def reAdjust(self):
+        p = self.parent
+        if self == p.left:
+            s = p.right
+            if s.color == TreeNode.RED:
+                p.rotateLeft()
+                p.color = TreeNode.RED
+                s.color = TreeNode.BLACK
+            else:
+                ls = s.left
+                rs = s.right
+                if ls.color == TreeNode.BLACK and rs.color == TreeNode.BLACK:
+                    s.color = TreeNode.RED
+                    p.reAdjust()
+                elif ls.color == TreeNode.RED and rs.color == TreeNode.BLACK:
+                    s.rotateRight()
+                    ls.color = TreeNode.BLACK
+                    s.color = TreeNode.RED
+                    self.reAdjust()
+                else:
+                    p.rotateLeft()
+                    s.color = p.color
+                    p.color = TreeNode.BLACK
+                    rs.color = TreeNode.BLACK
+
+        # 待调整节点是右节点，对称处理
+        else:
+
+
+    def delNode(self):
+        # 如果仅有一个节点
+        if not hasattr(self,"parent"):
+            self = None
+            return
+        p = self.parent
+        delColor = self.color
+        balanceNode = None
+        # 首先处理左右子树之一为空的情况
+        if not hasattr(self, "left") and not hasattr(self, "right"):
+            balanceNode = None
+            if self == p.left:
+                delattr(p,left)
+            else:
+                delattr(p,right)
+        elif not hasattr(self, "left") and hasattr(self, "right"):
+            balanceNode = self.right
+            self.replaceNode(self.right)
+        elif hasattr(self, "left") and not hasattr(self, "right"):
+            balanceNode = self.left
+            self.replaceNode(self.left)
+        # 左右子树均不为空的情况
+        else:
+            minNode = self.findMinNode()
+            self.val = minNode.val
+            # 动态规划成右子树最小节点删除的问题
+            delColor = minNode.color
+            balanceNode = minNode.right
+            minNode.replaceNode(minNode.right)
+
+        # 被删除的节点颜色若是RED，不需要调整
+        if delColor == TreeNode.BLACK:
+            # 替换节点如果是RED，直接替换成BLACK即可
+            if balanceNode.color == TreeNode.RED:
+                balanceNode.color = TreeNode.BLACK
+            else:
+                balanceNode.reAdjust()
+
 
 
 t1 = TreeNode(10,"t1")
