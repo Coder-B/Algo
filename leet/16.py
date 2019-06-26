@@ -7,10 +7,9 @@ class Solution:
         closestTar = 0
         while i<numLen-2:
             if i>0:
-                while nums[i] == nums[i-1]:
+                # add i 边界监测
+                while  i<numLen-2 and nums[i] == nums[i-1]:
                     i+=1
-            else:
-                i+=1
             low,high = i+1,numLen-1
             while low < high:
                 if nums[i]+nums[low]+nums[high] == target:
@@ -28,6 +27,7 @@ class Solution:
                         while low < high and nums[low] == nums[low+1]:
                             low+=1
                         low+=1
+            i+=1
         return closestTar
 
 
