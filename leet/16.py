@@ -8,6 +8,9 @@ class Solution:
         while i<numLen-2:
             if i>0:
                 # add i 边界监测
+
+
+
                 while  i<numLen-2 and nums[i] == nums[i-1]:
                     i+=1
             low,high = i+1,numLen-1
@@ -30,6 +33,24 @@ class Solution:
             i+=1
         return closestTar
 
+    # best version
+    def threeSumClosest0(self, nums, target):
+        f = lambda x: abs(x - target)
+        ans, n, nums = float('inf'), len(nums), sorted(nums)
+        for i in range(n-2):
+            if nums[i] >= target + abs(ans-target): 
+                break
+            hi, x =  n - 1, target - nums[i] - nums[n-1]
+            lo = bisect.bisect_left(nums, x, i + 1, hi) - 1 #binary search, with bounds
+            lo += (lo == i)                                 # why? bisect_left will never return i since the start index is i+1, commenting out this line fails for ([-1,2,1,-4], 1) XXX
+            while lo < hi :
+                sum = nums[i] + nums[lo] + nums[hi]
+                if sum == target:  
+                    return sum
+                ans = min(ans, sum, key = f)
+                hi -= sum > target
+                lo += sum < target
+        return ans
 
 s= Solution()
 print(s.threeSumClosest([-1, 2, 1, -4],1))
