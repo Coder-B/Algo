@@ -23,7 +23,6 @@ class Solution:
 
         while high < sLen:
             if s[high] in tCharMap and s[high] not in tmpMap:
-                print("have been line 26, coz ",high,s[high] )
                 if s[low] == s[high]:
                     low+=1
                     while low<=high:
@@ -48,8 +47,6 @@ class Solution:
                     if 0 == len(tmpMap):
                         if 0 == len(result) or high-low < len(result):
                             result = s[low:high+1]
-                            print("find one")
-                            print("after find overmap",overmap)
                         # slow need ++
                         if s[low] in overmap:
                             if overmap[s[low]] == 1:
@@ -63,7 +60,6 @@ class Solution:
                         # whether slow need further ++
                         while low <= high:
                             if s[low] in tCharMap:
-                                print("overmap",overmap)
                                 if s[low] not in overmap:
                                     break
                                 else:
